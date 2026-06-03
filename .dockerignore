@@ -1,0 +1,15 @@
+node_modules
+dist
+.git
+.gitignore
+coverage
+*.md
+.eslintrc.js
+.prettierrc
+jest.config.*
+test
+.vscode
+.idea
+*.log
+.env
+.env.*

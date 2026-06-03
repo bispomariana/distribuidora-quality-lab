@@ -1,0 +1,41 @@
+# CODEOWNERS — Distribuidora Quality Lab
+# Define os times responsáveis por aprovar mudanças em cada parte do código.
+# Referência: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Ownership global — todo PR precisa de aprovação de pelo menos um membro do core team
+* @distribuidora-quality-lab/core-team
+
+# Módulos de domínio — Backend Team é responsável pela lógica de negócio
+/src/modules/product/ @distribuidora-quality-lab/backend-team
+/src/modules/customer/ @distribuidora-quality-lab/backend-team
+/src/modules/inventory/ @distribuidora-quality-lab/backend-team
+/src/modules/order/ @distribuidora-quality-lab/backend-team
+/src/modules/payment-type/ @distribuidora-quality-lab/backend-team
+
+# Shared domain e building blocks
+/src/shared/domain/ @distribuidora-quality-lab/backend-team @distribuidora-quality-lab/architecture-team
+
+# Infraestrutura e observabilidade
+/src/shared/infrastructure/ @distribuidora-quality-lab/devops-team
+/src/shared/observability/ @distribuidora-quality-lab/sre-team
+
+# Pipeline CI/CD e configuração de deploy
+/.github/workflows/ @distribuidora-quality-lab/devops-team
+/Dockerfile @distribuidora-quality-lab/devops-team
+/docker-compose.yml @distribuidora-quality-lab/devops-team
+
+# Testes de propriedade e qualidade
+/test/property/ @distribuidora-quality-lab/qa-team @distribuidora-quality-lab/backend-team
+/test/integration/ @distribuidora-quality-lab/qa-team
+
+# Documentação e governança
+/docs/ @distribuidora-quality-lab/architecture-team
+/CONTRIBUTING.md @distribuidora-quality-lab/core-team
+/README.md @distribuidora-quality-lab/core-team
+
+# Configuração de dependências e segurança
+/package.json @distribuidora-quality-lab/devops-team @distribuidora-quality-lab/security-team
+/package-lock.json @distribuidora-quality-lab/devops-team
+
+# Database migrations
+/src/shared/infrastructure/database/migrations/ @distribuidora-quality-lab/backend-team @distribuidora-quality-lab/dba-team

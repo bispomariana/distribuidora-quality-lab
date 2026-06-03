@@ -1,0 +1,102 @@
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity as DomainEntity } from '@shared/domain/entity';
+import { ValidationException } from '@shared/domain/exceptions';
+
+interface CreateOrderItemProps {
+  orderId: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+@Entity('order_items')
+export class OrderItem extends DomainEntity {
+  @PrimaryGeneratedColumn('uuid')
+  private _id: string;
+
+  @Column({ name: 'order_id', type: 'uuid' })
+  private _orderId: string;
+
+  @Column({ name: 'product_id', type: 'uuid' })
+  private _productId: string;
+
+  @Column({ type: 'integer' })
+  private _quantity: number;
+
+  @Column('decimal', { name: 'unit_price', precision: 10, scale: 2 })
+  private _unitPrice: number;
+
+  @CreateDateColumn({ name: 'created_at' })
+  private _createdAt: Date;
+
+  get id(): string {
+    return this._id;
+  }
+
+  get orderId(): string {
+    return this._orderId;
+  }
+
+  get productId(): string {
+    return this._productId;
+  }
+
+  get quantity(): number {
+    return this._quantity;
+  }
+
+  get unitPrice(): number {
+    return this._unitPrice;
+  }
+
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+
+  get subtotal(): number {
+    return Number((this._quantity * this._unitPrice).toFixed(2));
+  }
+
+  static create(props: CreateOrderItemProps): OrderItem {
+    OrderItem.validateProductId(props.productId);
+    OrderItem.validateQuantity(props.quantity);
+    OrderItem.validateUnitPrice(props.unitPrice);
+
+    const item = new OrderItem();
+    item._orderId = props.orderId;
+    item._productId = props.productId;
+    item._quantity = props.quantity;
+    item._unitPrice = props.unitPrice;
+
+    return item;
+  }
+
+  updateQuantity(quantity: number): void {
+    OrderItem.validateQuantity(quantity);
+    this._quantity = quantity;
+  }
+
+  private static validateProductId(productId: string): void {
+    if (!productId || productId.trim().length === 0) {
+      throw new ValidationException('Product ID is required', {
+        productId: ['productId must be a valid UUID'],
+      });
+    }
+  }
+
+  private static validateQuantity(quantity: number): void {
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+      throw new ValidationException('Invalid quantity', {
+        quantity: ['quantity must be a positive integer greater than 0'],
+      });
+    }
+  }
+
+  private static validateUnitPrice(unitPrice: number): void {
+    if (unitPrice <= 0 || unitPrice > 999999.99) {
+      throw new ValidationException('Invalid unit price', {
+        unitPrice: ['unitPrice must be between 0.01 and 999999.99'],
+      });
+    }
+  }
+}
