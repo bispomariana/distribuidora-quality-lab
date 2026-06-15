@@ -20,6 +20,7 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "noUncheckedIndexedAccess": true,
+    "types": ["jest", "node"],
     "paths": {
       "@shared/*": ["src/shared/*"],
       "@modules/*": ["src/modules/*"]
