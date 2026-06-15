@@ -133,5 +133,20 @@ describe('CreateProductUseCase', () => {
       );
       expect(saveSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('should return product with name, price and category correctly mapped after creation', async () => {
+      const input = {
+        name: 'Vinho Barato 500ml',
+        unitPrice: 15.0,
+        category: 'Bebidas',
+      };
+
+      const result = await useCase.execute(input);
+
+      expect(result.name).toBe('Vinho Barato 500ml');
+      expect(result.unitPrice).toBe(15.0);
+      expect(result.category).toBe('Bebidas');
+      expect(result.available).toBe(true);
+    });
   });
 });
