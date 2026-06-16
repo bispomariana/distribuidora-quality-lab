@@ -18,7 +18,7 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: distribuidora
-      POSTGRES_PASSWORD: distribuidora
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
       POSTGRES_DB: distribuidora
     ports:
       - "5432:5432"
