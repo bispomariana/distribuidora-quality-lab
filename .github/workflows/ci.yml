@@ -49,10 +49,7 @@ jobs:
           fi
 
       - name: Security scan
-        run: |
-          echo "Running security audit..."
-          npm audit --audit-level=high || true
-          echo "Security scan completed"
+        run: npm audit --audit-level=critical
 
       - name: Generate SBOM
         run: |
