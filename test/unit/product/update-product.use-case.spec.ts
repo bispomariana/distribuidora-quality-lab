@@ -106,6 +106,20 @@ describe('UpdateProductUseCase', () => {
       expect(productRepository.save).toHaveBeenCalledTimes(1);
     });
 
+    it('should not call save when payload does not contain any update', async () => {
+      await expect(
+        useCase.execute('product-uuid-123', {}),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          id: 'product-uuid-123',
+          name: 'Produto Existente',
+        }),
+      );
+
+      expect(findByIdSpy).toHaveBeenCalledTimes(1);
+      expect(saveSpy).not.toHaveBeenCalled();
+    });
+
     it('should not call save when product is not found', async () => {
       productRepository.findById.mockResolvedValue(null);
 
