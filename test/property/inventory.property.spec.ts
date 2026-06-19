@@ -5,7 +5,7 @@ import { RegisterWithdrawalUseCase, RegisterWithdrawalInput } from '@modules/inv
 import { RegisterEntryUseCase, RegisterEntryInput } from '@modules/inventory/application/use-cases/register-entry.use-case';
 import { InventoryRepository } from '@modules/inventory/domain/repositories/inventory.repository';
 import { ProductRepository } from '@modules/product/domain/repositories/product.repository';
-import { ProductAggregate } from '@modules/product/domain/aggregates/product.aggregate';
+import { Product } from '@modules/product/domain/aggregates/product.aggregate';
 import { BusinessRuleException } from '@shared/domain/exceptions';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -51,17 +51,17 @@ class InMemoryInventoryRepository implements InventoryRepository {
 }
 
 class InMemoryProductRepository implements ProductRepository {
-  private store = new Map<string, ProductAggregate>();
+  private store = new Map<string, Product>();
 
-  addProduct(product: ProductAggregate): void {
+  addProduct(product: Product): void {
     this.store.set(product.id, product);
   }
 
-  async findById(id: string): Promise<ProductAggregate | null> {
+  async findById(id: string): Promise<Product | null> {
     return this.store.get(id) ?? null;
   }
 
-  async save(entity: ProductAggregate): Promise<void> {
+  async save(entity: Product): Promise<void> {
     this.store.set(entity.id, entity);
   }
 
@@ -69,15 +69,15 @@ class InMemoryProductRepository implements ProductRepository {
     this.store.delete(id);
   }
 
-  async findAll(): Promise<ProductAggregate[]> {
+  async findAll(): Promise<Product[]> {
     return Array.from(this.store.values());
   }
 }
 
 // --- Helpers ---
 
-function createTestProduct(): ProductAggregate {
-  const product = ProductAggregate.create({
+function createTestProduct(): Product {
+  const product = Product.create({
     name: 'Test Product',
     unitPrice: 10.0,
     category: 'Test',

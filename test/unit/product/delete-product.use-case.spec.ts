@@ -1,6 +1,6 @@
 import { DeleteProductUseCase } from '@modules/product/application/use-cases/delete-product.use-case';
 import { ProductRepository } from '@modules/product/domain/repositories/product.repository';
-import { ProductAggregate } from '@modules/product/domain/aggregates/product.aggregate';
+import { Product } from '@modules/product/domain/aggregates/product.aggregate';
 import { NotFoundException } from '@shared/domain/exceptions';
 import { LoggerService } from '@shared/infrastructure/logging/logger.service';
 
@@ -12,7 +12,7 @@ describe('DeleteProductUseCase', () => {
   let findByIdSpy: jest.SpyInstance;
 
   const createMockProduct = () => {
-    const product = ProductAggregate.create({
+    const product = Product.create({
       name: 'Produto Para Deletar',
       description: 'Será removido',
       unitPrice: 10.0,

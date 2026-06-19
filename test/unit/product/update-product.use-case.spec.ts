@@ -1,6 +1,6 @@
 import { UpdateProductUseCase } from '@modules/product/application/use-cases/update-product.use-case';
 import { ProductRepository } from '@modules/product/domain/repositories/product.repository';
-import { ProductAggregate } from '@modules/product/domain/aggregates/product.aggregate';
+import { Product } from '@modules/product/domain/aggregates/product.aggregate';
 import { NotFoundException } from '@shared/domain/exceptions';
 import { LoggerService } from '@shared/infrastructure/logging/logger.service';
 
@@ -12,7 +12,7 @@ describe('UpdateProductUseCase', () => {
   let findByIdSpy: jest.SpyInstance;
 
   const createMockProduct = (overrides: Partial<Record<string, unknown>> = {}) => {
-    const product = ProductAggregate.create({
+    const product = Product.create({
       name: 'Produto Existente',
       description: 'Descrição do produto',
       unitPrice: 15.0,
