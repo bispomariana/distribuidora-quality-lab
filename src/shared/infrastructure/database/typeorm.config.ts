@@ -1,5 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { ProductAggregate } from '@modules/product/domain/aggregates/product.aggregate';
+import { Product } from '@modules/product/domain/aggregates/product.aggregate';
 import { CustomerEntity } from '@modules/customer/domain/entities/customer.entity';
 import { InventoryMovement } from '@modules/inventory/domain/entities/inventory-movement.entity';
 import { OrderAggregate } from '@modules/order/domain/aggregates/order.aggregate';
@@ -15,7 +15,7 @@ export const dataSourceOptions: DataSourceOptions = {
   migrationsRun: true,
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
   entities: [
-    ProductAggregate,
+    Product,
     CustomerEntity,
     InventoryMovement,
     OrderAggregate,
