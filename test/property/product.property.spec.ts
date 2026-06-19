@@ -1,6 +1,6 @@
 import * as fc from 'fast-check';
 import {
-  ProductAggregate,
+  Product,
   CreateProductProps,
 } from '@modules/product/domain/aggregates/product.aggregate';
 import { CreateProductUseCase } from '@modules/product/application/use-cases/create-product.use-case';
@@ -15,25 +15,24 @@ import { v4 as uuidv4 } from 'uuid';
  * No mocks — a functional in-memory implementation.
  */
 class InMemoryProductRepository implements ProductRepository {
-  private store = new Map<string, ProductAggregate>();
+  private store = new Map<string, Product>();
 
-  async findById(id: string): Promise<ProductAggregate | null> {
+  async findById(id: string): Promise<Product | null> {
     return this.store.get(id) ?? null;
   }
 
-  async save(entity: ProductAggregate): Promise<void> {
-    // Simulate ID assignment (TypeORM generates UUID on save)
-    if (!entity.id) {
-      Object.defineProperty(entity, '_id', { value: uuidv4(), writable: true });
-    }
-    this.store.set(entity.id, entity);
+  async save(entity: Product): Promise<void> {
+  if (!entity.id) {
+    entity.assignId(uuidv4());
   }
+  this.store.set(entity.id, entity);
+}
 
   async delete(id: string): Promise<void> {
     this.store.delete(id);
   }
 
-  async findAll(): Promise<ProductAggregate[]> {
+  async findAll(): Promise<Product[]> {
     return Array.from(this.store.values());
   }
 
@@ -130,7 +129,7 @@ describe('Property Tests — Product Module', () => {
           validCategoryArb,
           (name, price, category) => {
             expect(() =>
-              ProductAggregate.create({
+              Product.create({
                 name,
                 unitPrice: price,
                 category,
@@ -150,7 +149,7 @@ describe('Property Tests — Product Module', () => {
           validCategoryArb,
           (name, price, category) => {
             expect(() =>
-              ProductAggregate.create({
+              Product.create({
                 name,
                 unitPrice: price,
                 category,
@@ -170,7 +169,7 @@ describe('Property Tests — Product Module', () => {
           invalidCategoryArb,
           (name, price, category) => {
             expect(() =>
-              ProductAggregate.create({
+              Product.create({
                 name,
                 unitPrice: price,
                 category,
