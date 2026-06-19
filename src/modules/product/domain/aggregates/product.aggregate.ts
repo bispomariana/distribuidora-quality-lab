@@ -1,10 +1,3 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
 import { AggregateRoot } from '@shared/domain/aggregate-root';
 import { ValidationException } from '@shared/domain/exceptions';
 import { ProductPrice } from '../value-objects/product-price.vo';
@@ -23,30 +16,25 @@ export interface UpdateProductProps {
   category?: string;
 }
 
-@Entity('products')
-export class ProductAggregate extends AggregateRoot {
-  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+export interface ReconstituteProductProps {
+  id: string;
+  name: string;
+  description: string;
+  unitPrice: number;
+  category: string;
+  available: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export class Product extends AggregateRoot {
   private _id: string;
-
-  @Column({ name: 'name', length: 150 })
   private _name: string;
-
-  @Column({ name: 'description', length: 1000, nullable: true })
   private _description: string;
-
-  @Column({ name: 'unit_price', type: 'decimal', precision: 10, scale: 2 })
   private _unitPrice: number;
-
-  @Column({ name: 'category', length: 100 })
   private _category: string;
-
-  @Column({ name: 'available', default: true })
   private _available: boolean;
-
-  @CreateDateColumn({ name: 'created_at' })
   private _createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
   private _updatedAt: Date;
 
   get id(): string {
@@ -81,12 +69,12 @@ export class ProductAggregate extends AggregateRoot {
     return this._updatedAt;
   }
 
-  static create(props: CreateProductProps): ProductAggregate {
-    ProductAggregate.validateName(props.name);
-    ProductAggregate.validateCategory(props.category);
+  static create(props: CreateProductProps): Product {
+    Product.validateName(props.name);
+    Product.validateCategory(props.category);
     const price = ProductPrice.create(props.unitPrice);
 
-    const product = new ProductAggregate();
+    const product = new Product();
     product._name = props.name;
     product._description = props.description ?? '';
     product._unitPrice = price.value;
@@ -96,9 +84,31 @@ export class ProductAggregate extends AggregateRoot {
     return product;
   }
 
+  static reconstitute(props: ReconstituteProductProps): Product {
+    const product = new Product();
+    product._id = props.id;
+    product._name = props.name;
+    product._description = props.description;
+    product._unitPrice = props.unitPrice;
+    product._category = props.category;
+    product._available = props.available;
+    product._createdAt = props.createdAt;
+    product._updatedAt = props.updatedAt;
+    return product;
+  }
+
+  assignId(id: string): void {
+    if (this._id) {
+      throw new ValidationException('Product already has an id assigned', {
+        id: ['cannot reassign id of an existing product'],
+      });
+    }
+    this._id = id;
+  }
+
   update(props: UpdateProductProps): void {
     if (props.name !== undefined) {
-      ProductAggregate.validateName(props.name);
+      Product.validateName(props.name);
       this._name = props.name;
     }
 
@@ -112,7 +122,7 @@ export class ProductAggregate extends AggregateRoot {
     }
 
     if (props.category !== undefined) {
-      ProductAggregate.validateCategory(props.category);
+      Product.validateCategory(props.category);
       this._category = props.category;
     }
   }
