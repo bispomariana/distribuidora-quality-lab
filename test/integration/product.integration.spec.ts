@@ -4,6 +4,7 @@ import { CreateProductUseCase } from '@modules/product/application/use-cases/cre
 import { ListProductsUseCase } from '@modules/product/application/use-cases/list-products.use-case';
 import { UpdateProductUseCase } from '@modules/product/application/use-cases/update-product.use-case';
 import { DeleteProductUseCase } from '@modules/product/application/use-cases/delete-product.use-case';
+import { Product } from '@modules/product/domain/aggregates/product.aggregate';
 
 describe('Product Integration', () => {
   let controller: ProductController;
@@ -18,6 +19,27 @@ describe('Product Integration', () => {
     save: jest.fn(),
     delete: jest.fn(),
   };
+
+  const buildProduct = (props: {
+    id: string;
+    name: string;
+    description: string;
+    unitPrice: number;
+    category: string;
+    available: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  }) =>
+    Product.reconstitute({
+      id: props.id,
+      name: props.name,
+      description: props.description,
+      unitPrice: props.unitPrice,
+      category: props.category,
+      available: props.available,
+      createdAt: props.createdAt,
+      updatedAt: props.updatedAt,
+    });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -88,26 +110,26 @@ describe('Product Integration', () => {
   describe('GET /products - List products via API flow', () => {
     it('should retrieve all products from database via API', async () => {
       const mockProducts = [
-        {
+        buildProduct({
           id: 'uuid-1',
           name: 'Product A',
           description: 'Desc A',
           unitPrice: 10.0,
           category: 'Cat A',
           available: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
+          createdAt: new Date('2026-06-19T10:00:00.000Z'),
+          updatedAt: new Date('2026-06-19T10:00:00.000Z'),
+        }),
+        buildProduct({
           id: 'uuid-2',
           name: 'Product B',
           description: 'Desc B',
           unitPrice: 20.0,
           category: 'Cat B',
           available: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
+          createdAt: new Date('2026-06-19T10:05:00.000Z'),
+          updatedAt: new Date('2026-06-19T10:05:00.000Z'),
+        }),
       ];
 
       mockProductRepository.findAll.mockResolvedValue(mockProducts);
@@ -129,16 +151,16 @@ describe('Product Integration', () => {
 
   describe('GET /products/:id - Get product by ID via API flow', () => {
     it('should retrieve specific product from database by UUID', async () => {
-      const mockProduct = {
+      const mockProduct = buildProduct({
         id: '550e8400-e29b-41d4-a716-446655440000',
         name: 'Specific Product',
         description: 'Found by ID',
         unitPrice: 99.99,
         category: 'Premium',
         available: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+        createdAt: new Date('2026-06-19T11:00:00.000Z'),
+        updatedAt: new Date('2026-06-19T11:00:00.000Z'),
+      });
 
       mockProductRepository.findById.mockResolvedValue(mockProduct);
 
@@ -153,19 +175,16 @@ describe('Product Integration', () => {
 
   describe('PATCH /products/:id - Update product via API flow', () => {
     it('should update product in database and return updated resource', async () => {
-      const mockProduct = {
+      const mockProduct = buildProduct({
         id: '550e8400-e29b-41d4-a716-446655440000',
         name: 'Old Name',
         description: 'Old desc',
         unitPrice: 10.0,
         category: 'Old Category',
         available: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        update: jest.fn().mockImplementation(function (this: any, props: any) {
-          if (props.name) this.name = props.name;
-        }),
-      };
+        createdAt: new Date('2026-06-19T12:00:00.000Z'),
+        updatedAt: new Date('2026-06-19T12:00:00.000Z'),
+      });
 
       mockProductRepository.findById.mockResolvedValue(mockProduct);
       mockProductRepository.save.mockResolvedValue(undefined);

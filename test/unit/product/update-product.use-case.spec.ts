@@ -2,23 +2,21 @@ import { UpdateProductUseCase } from '@modules/product/application/use-cases/upd
 import { ProductRepository } from '@modules/product/domain/repositories/product.repository';
 import { Product } from '@modules/product/domain/aggregates/product.aggregate';
 import { NotFoundException } from '@shared/domain/exceptions';
-import { LoggerService } from '@shared/infrastructure/logging/logger.service';
 
 describe('UpdateProductUseCase', () => {
   let useCase: UpdateProductUseCase;
   let productRepository: jest.Mocked<ProductRepository>;
-  let logger: jest.Mocked<LoggerService>;
   let saveSpy: jest.SpyInstance;
   let findByIdSpy: jest.SpyInstance;
 
-  const createMockProduct = (overrides: Partial<Record<string, unknown>> = {}) => {
+  const createMockProduct = () => {
     const product = Product.create({
       name: 'Produto Existente',
-      description: 'Descrição do produto',
+      description: 'DescriÃ§Ã£o do produto',
       unitPrice: 15.0,
       category: 'Categoria A',
     });
-    Object.assign(product, { _id: 'product-uuid-123', ...overrides });
+    product.assignId('product-uuid-123');
     return product;
   };
 
@@ -29,15 +27,6 @@ describe('UpdateProductUseCase', () => {
       delete: jest.fn().mockResolvedValue(undefined),
       findAll: jest.fn().mockResolvedValue([]),
     };
-
-    logger = {
-      log: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn(),
-      verbose: jest.fn(),
-      logRequest: jest.fn(),
-    } as unknown as jest.Mocked<LoggerService>;
 
     saveSpy = jest.spyOn(productRepository, 'save');
     findByIdSpy = jest.spyOn(productRepository, 'findById');
@@ -109,9 +98,9 @@ describe('UpdateProductUseCase', () => {
     it('should not call save when product is not found', async () => {
       productRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        useCase.execute('non-existent-id', { name: 'Teste' }),
-      ).rejects.toThrow(NotFoundException);
+      await expect(useCase.execute('non-existent-id', { name: 'Teste' })).rejects.toThrow(
+        NotFoundException,
+      );
 
       expect(findByIdSpy).toHaveBeenCalledWith('non-existent-id');
       expect(saveSpy).not.toHaveBeenCalled();

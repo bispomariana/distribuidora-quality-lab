@@ -18,7 +18,7 @@ describe('DeleteProductUseCase', () => {
       unitPrice: 10.0,
       category: 'Limpeza',
     });
-    Object.assign(product, { _id: 'delete-uuid-456' });
+    product.assignId('delete-uuid-456');
     return product;
   };
 
