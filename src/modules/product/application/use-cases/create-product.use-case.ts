@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ProductAggregate, CreateProductProps } from '../../domain/aggregates/product.aggregate';
+import { Product, CreateProductProps } from '../../domain/aggregates/product.aggregate';
 import { ProductRepository } from '../../domain/repositories/product.repository';
 
 export interface CreateProductOutput {
@@ -20,7 +20,7 @@ export class CreateProductUseCase {
   ) {}
 
   async execute(props: CreateProductProps): Promise<CreateProductOutput> {
-    const product = ProductAggregate.create(props);
+    const product = Product.create(props);
 
     await this.productRepository.save(product);
 

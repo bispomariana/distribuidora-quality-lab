@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductAggregate } from './domain/aggregates/product.aggregate';
+import { ProductOrmEntity } from './infrastructure/persistence/product.orm-entity';
 import { TypeOrmProductRepository } from './infrastructure/persistence/typeorm-product.repository';
 import { CreateProductUseCase } from './application/use-cases/create-product.use-case';
 import { ListProductsUseCase } from './application/use-cases/list-products.use-case';
@@ -9,7 +9,7 @@ import { DeleteProductUseCase } from './application/use-cases/delete-product.use
 import { ProductController } from './interface/controllers/product.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductAggregate])],
+  imports: [TypeOrmModule.forFeature([ProductOrmEntity])],
   controllers: [ProductController],
   providers: [
     {
